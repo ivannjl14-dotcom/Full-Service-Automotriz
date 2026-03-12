@@ -1,0 +1,2804 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FULL SERVICE SYSTEM</title>
+    <!-- Librerías para generar PDF e imágenes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+      body {
+        margin: 0;
+        font-family: sans-serif;
+        /* Fondo radial negro mate */
+        background: radial-gradient(circle at center, #333 0%, #000 100%);
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .topbar {
+        /* Encabezado gris oscuro */
+        background-color: #333;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .nav {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .nav-item {
+        margin-left: 0.5rem;
+        text-decoration: none;
+        color: #e0e0e0;
+        font-weight: bold;
+        font-size: clamp(0.75rem, 2vw, 1rem);
+        padding: 0.5rem;
+      }
+      .hero {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        text-align: center;
+        padding-top: clamp(40px, 10vw, 100px);
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+      h1 {
+        font-size: clamp(1.5rem, 5vw, 3rem);
+        margin-bottom: 0.5rem;
+      }
+      .subtitle {
+        font-size: clamp(1rem, 3vw, 1.5rem);
+      }
+      .services-container {
+        display: flex;
+        gap: clamp(10px, 2vw, 20px);
+        margin-top: 40px;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 0 1rem 2rem 1rem;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        padding: clamp(12px, 2vw, 20px);
+        width: clamp(200px, 90vw, 250px);
+        text-align: left;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        cursor: pointer;
+        transition: transform 0.3s, background-color 0.3s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+        background-color: rgba(255, 255, 255, 0.25);
+      }
+      .card h3 { 
+        margin-top: 0; 
+        color: #fff; 
+        border-bottom: 1px solid rgba(255,255,255,0.3); 
+        padding-bottom: 10px;
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
+      }
+
+      /* Estilos para el Login */
+      #login-screen {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .login-box {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: clamp(20px, 5vw, 40px);
+        border-radius: 20px;
+        width: clamp(280px, 90vw, 350px);
+        text-align: center;
+        color: #fff;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .login-box h2 {
+        margin-top: 0;
+        margin-bottom: 25px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        font-size: clamp(1.3rem, 4vw, 1.8rem);
+      }
+      .login-box input {
+        width: 100%;
+        padding: 12px;
+        margin: 12px 0;
+        border: none;
+        border-radius: 25px;
+        box-sizing: border-box;
+        background: rgba(255,255,255,0.9);
+        color: #333;
+        text-align: center;
+        font-size: 1rem;
+        transition: transform 0.3s;
+      }
+      .login-box input:focus {
+        outline: none;
+        transform: scale(1.05);
+      }
+      .login-box button {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(45deg, #8b0000, #d32f2f);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        margin-top: 20px;
+        font-weight: bold;
+        box-shadow: 0 5px 15px rgba(139, 0, 0, 0.4);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+      .login-box button:hover { 
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(139, 0, 0, 0.6);
+      }
+      .login-box .forgot-btn {
+        background: none;
+        box-shadow: none;
+        color: #ccc;
+        font-size: 0.9rem;
+        margin-top: 10px;
+        font-weight: normal;
+        text-decoration: underline;
+        padding: 5px;
+      }
+      .login-box .forgot-btn:hover { transform: none; box-shadow: none; color: #fff; }
+      .error-msg { 
+        color: #ff5252; 
+        display: none; 
+        margin-top: 15px; 
+        font-size: 0.9rem; 
+        background: rgba(0,0,0,0.3);
+        padding: 5px;
+        border-radius: 5px;
+      }
+      #login-screen h1 {
+        font-size: 3.5rem;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        margin-bottom: 40px;
+        margin-bottom: 30px;
+      }
+      #datetime {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        text-align: right;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+        font-weight: bold;
+        font-family: sans-serif;
+      }
+      .section-content {
+        width: 100%;
+        max-width: 900px;
+        animation: fadeIn 0.5s;
+        padding: 1rem;
+        padding-bottom: 150px;
+        margin: 0 auto;
+      }
+      .service-list {
+        list-style: none;
+        padding: 0;
+        text-align: left;
+        display: inline-block;
+        font-size: 1.2rem;
+      }
+      .service-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.3);
+      }
+      .gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: clamp(8px, 2vw, 15px);
+        justify-content: center;
+        margin-top: 20px;
+        padding: 1rem;
+        padding-bottom: 60px;
+      }
+      .gallery img {
+        width: clamp(150px, 45vw, 250px);
+        height: clamp(100px, 30vw, 180px);
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid rgba(255,255,255,0.3);
+        transition: transform 0.3s, border-color 0.3s;
+        cursor: pointer;
+      }
+      .gallery img:hover {
+        transform: scale(1.05);
+        border-color: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      }
+      .inspection-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: clamp(10px, 2vw, 15px);
+        text-align: left;
+        margin-top: 20px;
+        padding: 0 1rem;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+      .form-group label { 
+        margin-bottom: 5px; 
+        font-weight: bold;
+        font-size: clamp(0.85rem, 2vw, 1rem);
+      }
+      .form-group input {
+        padding: 8px; 
+        border-radius: 5px; 
+        border: 1px solid #666; 
+        color: #333;
+        font-size: clamp(0.85rem, 2vw, 1rem);
+      }
+      .action-btn {
+        margin-top: 30px;
+        padding: clamp(8px, 2vw, 12px) clamp(16px, 3vw, 24px);
+        background-color: #8b0000;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: clamp(0.85rem, 2vw, 1.1rem);
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .action-btn:hover { background-color: #854949; }
+      #inspeccion-section h2 {
+        margin-top: -75px;
+        padding: 0 1rem;
+      }
+      /* Estilos para el semáforo en Servicio */
+      .service-row {
+        display: flex;
+        flex-direction: column;
+        padding: clamp(8px, 2vw, 12px);
+        background: rgba(0, 0, 0, 0.2);
+        margin-bottom: 8px;
+        border-radius: 8px;
+        border: 1px solid rgba(255,255,255,0.1);
+        page-break-inside: avoid;
+        margin: 1rem;
+        margin-bottom: 8px;
+      }
+      .service-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .service-details {
+        display: flex;
+        gap: clamp(5px, 2vw, 10px);
+        margin-top: 10px;
+        width: 100%;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .service-details input[type="text"] {
+        flex: 1;
+        min-width: 150px;
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #666;
+        color: #333;
+      }
+      .service-details input[type="file"] {
+        color: #fff;
+        font-size: 0.8rem;
+      }
+      .delete-img-btn {
+        background-color: #ff1744;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 6px 10px;
+        cursor: pointer;
+        margin-left: 10px;
+        font-size: 0.8rem;
+      }
+      .img-preview {
+        max-width: 100px;
+        max-height: 100px;
+        margin-left: 10px;
+        border-radius: 4px;
+        border: 1px solid #666;
+        object-fit: cover;
+      }
+      .service-label {
+        font-size: clamp(0.85rem, 2vw, 1rem);
+        text-align: left;
+        flex: 1;
+        margin-right: 10px;
+      }
+      .traffic-light { 
+        display: flex; 
+        gap: clamp(10px, 2vw, 25px);
+        flex-wrap: wrap;
+      }
+      .light-label { cursor: pointer; position: relative; }
+      .light-label input { display: none; }
+      .bulb { width: 45px; height: 45px; border-radius: 50%; display: block; border: 3px solid #888; transition: all 0.2s; opacity: 0.4; }
+      
+      /* Colores base y estados activos */
+      .green .bulb { background-color: #00e676; }
+      .yellow .bulb { background-color: #ffea00; }
+      .red .bulb { background-color: #ff1744; }
+      
+      .light-label input:checked + .bulb { opacity: 1; transform: scale(1.2); border-color: #fff; box-shadow: 0 0 10px currentColor; }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      /* Efecto hover: Casillas se rellenan de negro al pasar el cursor */
+      input[type="text"]:hover, input[type="password"]:hover, input[type="date"]:hover, input[type="email"]:hover, input[type="number"]:hover {
+        background-color: #000000;
+        color: #ffffff;
+      }
+
+      .time-large {
+        font-size: 2rem;
+        display: block;
+      }
+      .date-small {
+        font-size: 1rem;
+        display: block;
+      }
+      .footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: rgba(51, 51, 51, 0.9);
+        color: #e0e0e0;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 0.9rem;
+      }
+      .footer-link {
+        color: #ff5252;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s;
+      }
+      .footer-link:hover { color: #ff867f; }
+
+      /* Estilos para la tabla de historial */
+      .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        overflow: hidden;
+        font-size: clamp(0.75rem, 1.5vw, 0.95rem);
+      }
+      .history-table th, .history-table td {
+        padding: clamp(6px, 1.5vw, 12px);
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .history-table th {
+        background-color: rgba(0, 0, 0, 0.3);
+        color: #fff;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+      }
+      .history-table tr:last-child td {
+        border-bottom: none;
+      }
+      .history-table tr:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      /* Estilos para el Inventario (Liquid Crystal) */
+      .liquid-box {
+        grid-column: 1 / -1;
+        background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+        border: 1px solid rgba(255,255,255,0.1);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: clamp(10px, 2vw, 15px);
+        margin: 1rem;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        color: #fff;
+      }
+      .inventory-grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); 
+        gap: clamp(8px, 1.5vw, 12px); 
+        margin-top: 15px;
+      }
+      .inventory-item { 
+        display: flex; 
+        align-items: center; 
+        gap: 8px;
+      }
+      .inventory-item input { 
+        position: static; 
+        opacity: 1; 
+        width: 18px; 
+        height: 18px; 
+        margin: 0; 
+        cursor: pointer;
+        appearance: none; 
+        -webkit-appearance: none; 
+        background: rgba(255,255,255,0.1); 
+        border: 1px solid rgba(255,255,255,0.3); 
+        border-radius: 4px;
+      }
+      .inventory-item input:checked { 
+        background: #00e676; 
+        border-color: #00e676; 
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='black' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); 
+      }
+      .inventory-label {
+        display: inline-block; 
+        cursor: pointer; 
+        font-size: clamp(0.75rem, 1.5vw, 13px); 
+        color: #bdbdbd;
+        padding: 0; 
+        background: none; 
+        border: none; 
+        text-align: left;
+      }
+      .inventory-item input:checked + .inventory-label {
+        background: none;
+        border: none;
+        color: #fff;
+        box-shadow: none;
+        font-weight: normal;
+        text-shadow: 0 0 10px rgba(255,255,255,0.5);
+      }
+      /* Estilos para Testigos (Warning Lights) */
+      .witness-item { 
+        display: flex; 
+        align-items: center; 
+        gap: 8px;
+      }
+      .witness-item input { 
+        position: static; 
+        opacity: 1; 
+        width: 18px; 
+        height: 18px; 
+        margin: 0; 
+        cursor: pointer;
+        appearance: none; 
+        -webkit-appearance: none; 
+        background: rgba(255,255,255,0.1); 
+        border: 1px solid rgba(255,255,255,0.3); 
+        border-radius: 4px;
+      }
+      .witness-item input:checked { 
+        background: #ff1744; 
+        border-color: #ff1744; 
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='black' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E"); 
+      }
+      .witness-label {
+        display: inline-flex; 
+        align-items: center; 
+        gap: 6px; 
+        cursor: pointer; 
+        font-size: clamp(0.75rem, 1.5vw, 13px); 
+        color: #bdbdbd;
+      }
+      .witness-label i { 
+        font-size: 18px; 
+        margin-right: 2px; 
+      }
+      .witness-item input:checked + .witness-label {
+        color: #ff1744; 
+        font-weight: bold; 
+        text-shadow: 0 0 10px rgba(255, 23, 68, 0.5);
+      }
+
+      /* Media Queries para Responsividad */
+      @media (max-width: 768px) {
+        .topbar {
+          padding: 0.75rem 0.5rem;
+          gap: 0.25rem;
+        }
+        
+        .nav {
+          gap: 0.25rem;
+          width: 100%;
+          order: 3;
+        }
+
+        #welcome-message {
+          order: 2;
+          flex: 1;
+          text-align: right;
+          font-size: 0.8rem !important;
+          padding-right: 1rem;
+        }
+
+        .hero {
+          padding-top: 20px !important;
+        }
+
+        .section-content {
+          max-width: 100%;
+          padding: 0;
+        }
+
+        .inspection-grid {
+          grid-template-columns: 1fr;
+          padding: 0.5rem;
+        }
+
+        .history-table {
+          font-size: 0.7rem;
+        }
+
+        .history-table th, .history-table td {
+          padding: 6px;
+        }
+
+        #datetime {
+          top: 5px;
+          right: 5px;
+          font-size: 0.75rem;
+        }
+
+        .liquid-box {
+          margin: 0.5rem;
+          padding: 10px;
+        }
+
+        .inventory-grid {
+          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        }
+      }
+
+      @media (max-width: 480px) {
+        h1 {
+          font-size: 1.5rem;
+        }
+
+        .subtitle {
+          font-size: 0.9rem;
+        }
+
+        .nav-item {
+          font-size: 0.65rem;
+          padding: 0.25rem;
+          margin-left: 0.25rem;
+        }
+
+        .card {
+          width: 100%;
+          max-width: 280px;
+        }
+
+        .services-container {
+          padding: 0.5rem;
+          gap: 10px;
+        }
+
+        .login-box {
+          width: 90vw;
+          padding: 20px;
+        }
+
+        .service-row {
+          margin: 0.5rem;
+        }
+
+        .service-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .traffic-light {
+          margin-top: 0.5rem;
+          width: 100%;
+        }
+
+        .service-details {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .service-details input[type="text"] {
+          width: 100%;
+        }
+
+        .inventory-grid {
+          grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        }
+
+        .delete-img-btn {
+          margin-left: 0;
+          margin-top: 0.5rem;
+        }
+
+        .footer {
+          font-size: 0.75rem;
+          padding: 8px 0;
+        }
+
+        #inspeccion-section h2 {
+          margin-top: 0;
+          font-size: 1.3rem;
+          padding: 0 0.5rem;
+        }
+
+        .time-large {
+          font-size: 1.3rem;
+        }
+
+        .date-small {
+          font-size: 0.7rem;
+        }
+      }
+
+      @media (max-width: 360px) {
+        h1 {
+          font-size: 1.2rem;
+        }
+
+        .nav-item {
+          font-size: 0.55rem;
+          padding: 0.15rem;
+        }
+
+        .login-box {
+          padding: 15px;
+        }
+
+        .card h3 {
+          font-size: 0.9rem;
+        }
+
+        .card p {
+          font-size: 0.75rem;
+        }
+
+        .form-group label {
+          font-size: 0.75rem;
+        }
+
+        .service-label {
+          font-size: 0.8rem;
+        }
+
+        .traffic-light {
+          gap: 10px;
+        }
+
+        .bulb {
+          width: 35px;
+          height: 35px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Pantalla de Login -->
+    <div id="login-screen">
+      <h1>FULL SERVICE SYSTEM</h1>
+      <div id="datetime"></div>
+      <div class="login-box">
+        <h2>INICIAR SESION</h2>
+        <input type="text" id="username" placeholder="Usuario">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="login()">Entrar</button>
+        <button class="forgot-btn" onclick="alert('Por favor contacte al administrador para restablecer su contraseña.')">Olvidé mi contraseña</button>
+        <p id="error-msg" class="error-msg">Credenciales incorrectas</p>
+      </div>
+      <p style="margin-top: 50px; font-weight: bold; font-size: 1rem; max-width: 80%; text-align: center; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); opacity: 0.8;">"BRINDAR UN EXCELENTE SERVICIO, CON TOTAL CONOCIMIENTO Y MANTENER LA LEALTAD CON NUESTROS CLIENTES."</p>
+    </div>
+
+    <!-- Notificación para el Técnico -->
+    <div id="tech-notification" onclick="loadOrderToService()" style="display:none; position:fixed; top:80px; right:20px; background:linear-gradient(45deg, #ff6b6b, #ff8e53); color:white; padding:15px 20px; border-radius:8px; cursor:pointer; z-index:2000; box-shadow:0 4px 15px rgba(0,0,0,0.5); animation: slideIn 0.5s; border: 1px solid rgba(255,255,255,0.2);">
+      <div style="font-weight:bold; font-size:1.1rem; margin-bottom:5px;">🔔 Nueva Orden Asignada</div>
+      <div style="font-size:0.9rem;">Click para cargar datos del vehículo</div>
+    </div>
+
+    <!-- Notificación para el Asesor (Ordenes Terminadas) -->
+    <div id="advisor-notification" style="display:none; position:fixed; top:80px; right:20px; width: 450px; max-height: 80vh; overflow-y: auto; z-index:2000; animation: slideIn 0.5s;" class="liquid-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:10px; margin-bottom:10px;">
+        <h3 style="margin:0; color:#00e676;"><i class="fas fa-check-circle"></i> Ordenes Terminadas</h3>
+        <div style="display:flex; gap:10px;">
+          <button onclick="saveNotificationAsImage()" style="background:#00e676; border:none; color:#000; cursor:pointer; padding:5px 10px; border-radius:4px; font-weight:bold;">Guardar</button>
+          <button onclick="closeAdvisorNotification()" style="background:none; border:none; color:#fff; cursor:pointer; font-size:1.2rem;">&times;</button>
+        </div>
+      </div>
+      <div id="advisor-notification-content"></div>
+    </div>
+
+    <!-- Contenido Principal (Oculto inicialmente) -->
+    <div id="main-content" style="display: none; flex: 1; flex-direction: column;">
+    <header class="topbar">
+      <a href="#" onclick="goHome(); return false;" class="logo" aria-label="Ir a inicio">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M10 20V14H14V20H19V12H22L12 3L2 12H5V20H10Z" fill="#ffffff"/>
+        </svg>
+      </a>
+
+      <div id="welcome-message" style="color: #e0e0e0; font-weight: bold;"></div>
+
+      <nav class="nav">
+        <a id="nav-servicio" class="nav-item" href="#" onclick="showSection('servicio-section')">SERVICIO</a>
+        <a id="nav-diagnostico" class="nav-item" href="#" onclick="showSection('diagnostico-section')">DIAGNOSTICO</a>
+        <a id="nav-inspeccion" class="nav-item" href="#" onclick="showSection('inspeccion-section')">INSPECCION</a>
+        <a id="nav-historial" class="nav-item" href="#" onclick="showSection('historial-section')">HISTORIAL</a>
+        <a class="nav-item" href="#" onclick="logout()">CERRAR SESIÓN</a>
+      </nav>
+    </header>
+
+    <main class="hero" id="home">
+      <div id="home-section">
+      <h1>FULL SERVICE SYSTEM</h1>
+      <p class="subtitle">Inspeccion completa del vehiculo para garantizar su seguridad</p>
+
+      <div class="services-container">
+        <div class="card" onclick="showSection('servicio-section')">
+          <h3>Mantenimiento</h3>
+          <p>Servicios preventivos, cambios de aceite y afinación para mantener tu motor en perfecto estado.</p>
+        </div>
+        <div class="card" onclick="showSection('servicio-section')" style="pointer-events: none; opacity: 0.5;">
+          <h3>Reparación</h3>
+          <p>Solución experta a fallas mecánicas, sistema de frenos, suspensión y transmisión.</p>
+        </div>
+        <div class="card" onclick="showSection('diagnostico-section')">
+          <h3>Diagnóstico</h3>
+          <p>Escaneo computarizado de última generación para detectar cualquier problema electrónico.</p>
+        </div>
+      </div>
+
+      <p style="margin-top: 50px; font-weight: bold; font-size: 1.1rem; max-width: 90%; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">"BRINDAR UN EXCELENTE SERVICIO, CON TOTAL CONOCIMIENTO Y MANTENER LA LEALTAD CON NUESTROS CLIENTES"</p>
+      </div>
+
+      <!-- Sección Servicio -->
+      <div id="servicio-section" class="section-content" style="display: none;">
+        <h2>Mantenimiento Preventivo</h2>
+        <div id="service-client-info" style="display:none;"></div>
+        <p class="subtitle">Evaluación de puntos (Verde: OK, Amarillo: Atención, Rojo: Mal):</p>
+        
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Fluido de lavaparabrisas</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s1" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s1" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s1" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Nivel y condicion del fluido de Transmision</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s2" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s2" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s2" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Nivel y condicion del liquido de frenos</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s3" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s3" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s3" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Nivel y condicion del liquido de direccion hidraulica</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s4" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s4" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s4" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Nivel y condicion del anticongelante</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s5" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s5" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s5" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Transeje</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s6" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s6" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s6" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Cuarteadoras en el parabrisas</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s7" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s7" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s7" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Funcionamiento del claxon</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s8" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s8" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s8" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Funcionamiento de las luces interiores</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s9" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s9" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s9" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Fugas en el sistema de enfriamiento</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s10" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s10" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s10" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Fugas de aceite (Especificar)</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s11" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s11" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s11" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Fugas en el sistema de A/C</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s12" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s12" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s12" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Sistema de escape</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s13" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s13" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s13" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Bandas</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s14" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s14" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s14" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Sistema de direccion</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s15" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s15" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s15" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Suspension</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s16" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s16" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s16" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Lineas y mangueras</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s17" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s17" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s17" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Terminales del acumulador</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s18" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s18" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s18" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Funcionamiento del embrague (si esta equipado)</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="s19" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="s19" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="s19" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+        <div style="background-color: #666666; color: white; padding: 15px; margin-top: 20px; margin-bottom: 10px; border-radius: 8px; text-align: center; font-weight: bold; border: 1px solid rgba(255,255,255,0.3);">
+          DESGASTE DE NEUMATICO/FRENO
+        </div>
+        <div style="margin-top: 15px; padding: 0 10px;">
+          <div style="display: flex; align-items: center; margin-bottom: 15px;">
+            <input type="checkbox" id="no-balatas" style="width: 20px; height: 20px; cursor: pointer;">
+            <label for="no-balatas" style="margin-left: 10px; cursor: pointer;">No se midieron las balatas en este servicio</label>
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <label style="font-weight: bold;">Medida de llanta:</label>
+              <input type="text" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; flex: 1; max-width: 300px;">
+              <label style="font-weight: bold;">Profundidad (mm):</label>
+              <input type="number" oninput="validateDepth(this)" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 80px;">
+              <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+              <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+            </div>
+            <div style="text-align: center; font-weight: bold; margin-top: 10px; font-size: 1.1rem;">Delantero Izquierdo</div>
+            
+            <!-- Profundidad de dibujo -->
+            <div class="service-row" style="margin-top: 10px;">
+              <div class="service-header">
+                <span class="service-label">Profundidad de dibujo del neumatico</span>
+                <div class="traffic-light">
+                  <label class="light-label green"><input type="radio" name="depth_fl" value="g"><span class="bulb"></span></label>
+                  <label class="light-label yellow"><input type="radio" name="depth_fl" value="y"><span class="bulb"></span></label>
+                  <label class="light-label red"><input type="radio" name="depth_fl" value="r"><span class="bulb"></span></label>
+                </div>
+              </div>
+              <div class="service-details">
+                <label style="margin-right: 5px;">Milímetros:</label>
+                <input type="number" oninput="validateDepth(this)" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 100px;">
+                <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+                <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+              </div>
+            </div>
+            
+            <!-- Presion de la llanta -->
+            <div class="service-row">
+              <div class="service-header">
+                <span class="service-label">Presion de la llanta PSI</span>
+                <div class="traffic-light">
+                  <label class="light-label green"><input type="radio" name="psi_fl" value="g"><span class="bulb"></span></label>
+                  <label class="light-label yellow"><input type="radio" name="psi_fl" value="y"><span class="bulb"></span></label>
+                  <label class="light-label red"><input type="radio" name="psi_fl" value="r"><span class="bulb"></span></label>
+                </div>
+              </div>
+              <div class="service-details">
+                <label style="margin-right: 5px;">PSI:</label>
+                <input type="number" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 100px;">
+                <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+                <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+              </div>
+            </div>
+
+            <!-- Espesor de balatas -->
+            <div class="service-row">
+              <div class="service-header">
+                <span class="service-label">Espesor de balatas</span>
+                <div class="traffic-light">
+                  <label class="light-label green"><input type="radio" name="balatas_fl" value="g"><span class="bulb"></span></label>
+                  <label class="light-label yellow"><input type="radio" name="balatas_fl" value="y"><span class="bulb"></span></label>
+                  <label class="light-label red"><input type="radio" name="balatas_fl" value="r"><span class="bulb"></span></label>
+                </div>
+              </div>
+              <div class="service-details">
+                <label style="margin-right: 5px;">mm:</label>
+                <input type="number" oninput="validateDepth(this)" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 100px;">
+                <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+                <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Delantero Derecho -->
+          <div style="margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <label style="font-weight: bold;">Medida de llanta:</label>
+              <input type="text" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; flex: 1; max-width: 300px;">
+              <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+              <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+            </div>
+            <div style="text-align: center; font-weight: bold; margin-top: 10px; font-size: 1.1rem;">Delantero Derecho</div>
+            
+            <!-- Profundidad de dibujo -->
+            <div class="service-row" style="margin-top: 10px;">
+              <div class="service-header">
+                <span class="service-label">Profundidad de dibujo del neumatico</span>
+                <div class="traffic-light">
+                  <label class="light-label green"><input type="radio" name="depth_fr" value="g"><span class="bulb"></span></label>
+                  <label class="light-label yellow"><input type="radio" name="depth_fr" value="y"><span class="bulb"></span></label>
+                  <label class="light-label red"><input type="radio" name="depth_fr" value="r"><span class="bulb"></span></label>
+                </div>
+              </div>
+              <div class="service-details">
+                <label style="margin-right: 5px;">Milímetros:</label>
+                <input type="number" oninput="validateDepth(this)" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 100px;">
+                <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+                <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+              </div>
+            </div>
+
+            <!-- Presion de la llanta -->
+            <div class="service-row">
+              <div class="service-header">
+                <span class="service-label">Presion de la llanta PSI</span>
+                <div class="traffic-light">
+                  <label class="light-label green"><input type="radio" name="psi_fr" value="g"><span class="bulb"></span></label>
+                  <label class="light-label yellow"><input type="radio" name="psi_fr" value="y"><span class="bulb"></span></label>
+                  <label class="light-label red"><input type="radio" name="psi_fr" value="r"><span class="bulb"></span></label>
+                </div>
+              </div>
+              <div class="service-details">
+                <label style="margin-right: 5px;">PSI:</label>
+                <input type="number" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 100px;">
+                <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+                <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+              </div>
+            </div>
+
+            <!-- Espesor de balatas -->
+            <div class="service-row">
+              <div class="service-header">
+                <span class="service-label">Espesor de balatas</span>
+                <div class="traffic-light">
+                  <label class="light-label green"><input type="radio" name="balatas_fr" value="g"><span class="bulb"></span></label>
+                  <label class="light-label yellow"><input type="radio" name="balatas_fr" value="y"><span class="bulb"></span></label>
+                  <label class="light-label red"><input type="radio" name="balatas_fr" value="r"><span class="bulb"></span></label>
+                </div>
+              </div>
+              <div class="service-details">
+                <label style="margin-right: 5px;">mm:</label>
+                <input type="number" oninput="validateDepth(this)" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 100px;">
+                <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+                <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trasero Izquierdo -->
+          <div style="margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <label style="font-weight: bold;">Medida de llanta:</label>
+              <input type="text" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; flex: 1; max-width: 300px;">
+              <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+              <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+            </div>
+            <div style="text-align: center; font-weight: bold; margin-top: 10px; font-size: 1.1rem;">Trasero Izquierdo</div>
+            
+            <!-- Profundidad de dibujo -->
+            <div class="service-row" style="margin-top: 10px;">
+              <div class="service-header">
+                <span class="service-label">Profundidad de dibujo del neumatico</span>
+                <div class="traffic-light">
+                  <label class="light-label green"><input type="radio" name="depth_rl" value="g"><span class="bulb"></span></label>
+                  <label class="light-label yellow"><input type="radio" name="depth_rl" value="y"><span class="bulb"></span></label>
+                  <label class="light-label red"><input type="radio" name="depth_rl" value="r"><span class="bulb"></span></label>
+                </div>
+              </div>
+              <div class="service-details">
+                <label style="margin-right: 5px;">Milímetros:</label>
+                <input type="number" oninput="validateDepth(this)" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 100px;">
+                <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+                <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+              </div>
+            </div>
+
+            <!-- Presion de la llanta -->
+            <div class="service-row">
+              <div class="service-header">
+                <span class="service-label">Presion de la llanta PSI</span>
+                <div class="traffic-light">
+                  <label class="light-label green"><input type="radio" name="psi_rl" value="g"><span class="bulb"></span></label>
+                  <label class="light-label yellow"><input type="radio" name="psi_rl" value="y"><span class="bulb"></span></label>
+                  <label class="light-label red"><input type="radio" name="psi_rl" value="r"><span class="bulb"></span></label>
+                </div>
+              </div>
+              <div class="service-details">
+                <label style="margin-right: 5px;">PSI:</label>
+                <input type="number" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 100px;">
+                <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+                <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+              </div>
+            </div>
+
+            <!-- Espesor de balatas -->
+            <div class="service-row">
+              <div class="service-header">
+                <span class="service-label">Espesor de balatas</span>
+                <div class="traffic-light">
+                  <label class="light-label green"><input type="radio" name="balatas_rl" value="g"><span class="bulb"></span></label>
+                  <label class="light-label yellow"><input type="radio" name="balatas_rl" value="y"><span class="bulb"></span></label>
+                  <label class="light-label red"><input type="radio" name="balatas_rl" value="r"><span class="bulb"></span></label>
+                </div>
+              </div>
+              <div class="service-details">
+                <label style="margin-right: 5px;">mm:</label>
+                <input type="number" oninput="validateDepth(this)" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 100px;">
+                <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+                <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trasero Derecho -->
+          <div style="margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <label style="font-weight: bold;">Medida de llanta:</label>
+              <input type="text" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; flex: 1; max-width: 300px;">
+              <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+              <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+            </div>
+            <div style="text-align: center; font-weight: bold; margin-top: 10px; font-size: 1.1rem;">Trasero Derecho</div>
+            
+            <!-- Profundidad de dibujo -->
+            <div class="service-row" style="margin-top: 10px;">
+              <div class="service-header">
+                <span class="service-label">Profundidad de dibujo del neumatico</span>
+                <div class="traffic-light">
+                  <label class="light-label green"><input type="radio" name="depth_rr" value="g"><span class="bulb"></span></label>
+                  <label class="light-label yellow"><input type="radio" name="depth_rr" value="y"><span class="bulb"></span></label>
+                  <label class="light-label red"><input type="radio" name="depth_rr" value="r"><span class="bulb"></span></label>
+                </div>
+              </div>
+              <div class="service-details">
+                <label style="margin-right: 5px;">Milímetros:</label>
+                <input type="number" oninput="validateDepth(this)" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 100px;">
+                <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+                <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+              </div>
+            </div>
+
+            <!-- Presion de la llanta -->
+            <div class="service-row">
+              <div class="service-header">
+                <span class="service-label">Presion de la llanta PSI</span>
+                <div class="traffic-light">
+                  <label class="light-label green"><input type="radio" name="psi_rr" value="g"><span class="bulb"></span></label>
+                  <label class="light-label yellow"><input type="radio" name="psi_rr" value="y"><span class="bulb"></span></label>
+                  <label class="light-label red"><input type="radio" name="psi_rr" value="r"><span class="bulb"></span></label>
+                </div>
+              </div>
+              <div class="service-details">
+                <label style="margin-right: 5px;">PSI:</label>
+                <input type="number" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 100px;">
+                <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+                <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+              </div>
+            </div>
+
+            <!-- Espesor de balatas -->
+            <div class="service-row">
+              <div class="service-header">
+                <span class="service-label">Espesor de balatas</span>
+                <div class="traffic-light">
+                  <label class="light-label green"><input type="radio" name="balatas_rr" value="g"><span class="bulb"></span></label>
+                  <label class="light-label yellow"><input type="radio" name="balatas_rr" value="y"><span class="bulb"></span></label>
+                  <label class="light-label red"><input type="radio" name="balatas_rr" value="r"><span class="bulb"></span></label>
+                </div>
+              </div>
+              <div class="service-details">
+                <label style="margin-right: 5px;">mm:</label>
+                <input type="number" oninput="validateDepth(this)" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 100px;">
+                <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+                <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="background-color: #666666; color: white; padding: 15px; margin-top: 20px; margin-bottom: 10px; border-radius: 8px; text-align: center; font-weight: bold; border: 1px solid rgba(255,255,255,0.3);">
+          REVISAR ESTADO DEL ACUMULADOR
+        </div>
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Estado de bateria</span>
+            <div class="traffic-light">
+              <label class="light-label green"><input type="radio" name="battery_status" value="g"><span class="bulb"></span></label>
+              <label class="light-label yellow"><input type="radio" name="battery_status" value="y"><span class="bulb"></span></label>
+              <label class="light-label red"><input type="radio" name="battery_status" value="r"><span class="bulb"></span></label>
+            </div>
+          </div>
+          <div class="service-details">
+            <label style="margin-right: 5px;">CCA:</label>
+            <input type="text" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; width: 100px;">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar Imagen</button>
+          </div>
+        </div>
+        <div style="background-color: #666666; color: white; padding: 15px; margin-top: 20px; margin-bottom: 10px; border-radius: 8px; text-align: center; font-weight: bold; border: 1px solid rgba(255,255,255,0.3);">
+          SERVICIOS ADICIONALES RECOMENDADOS
+        </div>
+        
+        <!-- Rotacion de neumaticos -->
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Rotacion de neumaticos</span>
+            <div style="display: flex; gap: 20px; align-items: center;">
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="add_rotacion" value="si"> Si</label>
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="add_rotacion" value="no"> No</label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar Imagen</button>
+          </div>
+        </div>
+
+        <!-- Filtro de aire -->
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Filtro de aire</span>
+            <div style="display: flex; gap: 20px; align-items: center;">
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="add_filtro" value="si"> Si</label>
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="add_filtro" value="no"> No</label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar Imagen</button>
+          </div>
+        </div>
+
+        <!-- Plumas limpiadoras -->
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Plumas limpiadoras</span>
+            <div style="display: flex; gap: 20px; align-items: center;">
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="add_plumas" value="si"> Si</label>
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="add_plumas" value="no"> No</label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar Imagen</button>
+          </div>
+        </div>
+
+        <!-- Reparacion de llanta -->
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Reparacion de llanta</span>
+            <div style="display: flex; gap: 20px; align-items: center;">
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="add_reparacion" value="si"> Si</label>
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="add_reparacion" value="no"> No</label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar Imagen</button>
+          </div>
+        </div>
+
+        <!-- Otros -->
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Otros</span>
+            <div style="display: flex; gap: 20px; align-items: center;">
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="add_otros" value="si"> Si</label>
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;"><input type="radio" name="add_otros" value="no"> No</label>
+            </div>
+          </div>
+          <div class="service-details">
+            <input type="text" placeholder="Comentarios">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar Imagen</button>
+          </div>
+        </div>
+        <div style="background-color: #666666; color: white; padding: 15px; margin-top: 20px; margin-bottom: 10px; border-radius: 8px; text-align: center; font-weight: bold; border: 1px solid rgba(255,255,255,0.3);">
+          COMENTARIOS
+        </div>
+        <textarea style="width: 100%; height: 120px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; resize: vertical; font-family: sans-serif;"></textarea>
+        
+        <button class="action-btn" style="background-color: #d32f2f; width: 100%; margin-top: 20px; font-weight: bold;" onclick="finalizeService()">Finalizar Servicio</button>
+      </div>
+
+      <!-- Sección Diagnóstico -->
+      <div id="diagnostico-section" class="section-content" style="display: none;">
+        <h2>Diagnóstico del Vehículo</h2>
+        <p class="subtitle">Registro de fallas y observaciones técnicas</p>
+        
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Códigos de Falla (DTC)</span>
+          </div>
+          <div class="service-details">
+            <textarea style="width: 100%; height: 80px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; resize: vertical; font-family: sans-serif;" placeholder="Ingrese los códigos de falla detectados..."></textarea>
+          </div>
+        </div>
+
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Descripción del Problema (Cliente)</span>
+          </div>
+          <div class="service-details">
+            <textarea style="width: 100%; height: 80px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; resize: vertical; font-family: sans-serif;" placeholder="Describa el problema reportado por el cliente..."></textarea>
+          </div>
+        </div>
+
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Diagnóstico Técnico y Recomendaciones</span>
+          </div>
+          <div class="service-details">
+            <textarea style="width: 100%; height: 120px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; resize: vertical; font-family: sans-serif;" placeholder="Detalles del diagnóstico y pasos a seguir..."></textarea>
+          </div>
+        </div>
+
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Pruebas Eléctricas (Batería/Alternador)</span>
+          </div>
+          <div class="service-details">
+            <textarea style="width: 100%; height: 60px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; resize: vertical; font-family: sans-serif;" placeholder="Resultados de pruebas eléctricas..."></textarea>
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Análisis de Sensores y Datos en Vivo</span>
+          </div>
+          <div class="service-details">
+            <textarea style="width: 100%; height: 60px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; resize: vertical; font-family: sans-serif;" placeholder="Lecturas de sensores, ajustes de combustible, etc..."></textarea>
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Inspección de Fugas y Fluidos</span>
+          </div>
+          <div class="service-details">
+            <textarea style="width: 100%; height: 60px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; resize: vertical; font-family: sans-serif;" placeholder="Detalles de fugas encontradas..."></textarea>
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Prueba de Ruta / Comportamiento</span>
+          </div>
+          <div class="service-details">
+            <textarea style="width: 100%; height: 60px; padding: 10px; border-radius: 5px; border: 1px solid #ccc; background-color: #ffffff; color: #333; resize: vertical; font-family: sans-serif;" placeholder="Comportamiento en carretera, ruidos, vibraciones..."></textarea>
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+
+        <div class="service-row">
+          <div class="service-header">
+            <span class="service-label">Evidencia Fotográfica</span>
+          </div>
+          <div class="service-details">
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+            <input type="file" accept="image/*" onchange="toggleDeleteBtn(this)" style="margin-left: 10px;">
+            <button type="button" class="delete-img-btn" onclick="clearImage(this)" style="display:none;">Eliminar</button>
+          </div>
+        </div>
+
+        <button class="action-btn" style="background-color: #d32f2f; width: 100%; margin-top: 20px; font-weight: bold;" onclick="finalizeDiagnostic()">Finalizar Diagnóstico</button>
+      </div>
+
+      <!-- Sección Inspección -->
+      <div id="inspeccion-section" class="section-content" style="display: none;">
+        <h2>INFORMACION DEL VEHICULO</h2>
+        <div class="inspection-grid">
+          <div class="form-group">
+            <label>Número de orden</label>
+            <input type="text">
+          </div>
+          <div class="form-group">
+            <label>Nombre del cliente</label>
+            <input type="text">
+          </div>
+          <div class="form-group">
+            <label>Fecha de servicio</label>
+            <input type="date">
+          </div>
+          <div class="form-group">
+            <label>Email del cliente</label>
+            <input type="email">
+          </div>
+          <div class="form-group">
+            <label>Marca del vehiculo</label>
+            <input type="text">
+          </div>
+          <div class="form-group">
+            <label>Modelo</label>
+            <input type="text">
+          </div>
+          <div class="form-group">
+            <label>Año</label>
+            <input type="number">
+          </div>
+          <div class="form-group">
+            <label>VIN</label>
+            <input type="text">
+          </div>
+          <div class="form-group">
+            <label>Kilometraje</label>
+            <input type="number">
+          </div>
+        </div>
+
+        <div class="liquid-box">
+          <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:5px;margin-bottom:10px">
+            <h3 style="margin:0;font-size:14px;color:#fff">Inventario del Vehículo</h3>
+            <button type="button" id="btnToggleInventory" onclick="toggleInventory()" style="background:none;border:none;color:#00e676;font-size:11px;cursor:pointer;font-weight:bold;text-transform:uppercase">Seleccionar Todos</button>
+          </div>
+          <div class="inventory-grid">
+            <div class="inventory-item"><input type="checkbox" id="inv1" value="Espejos"><label for="inv1" class="inventory-label">Espejos</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv2" value="Faros delantero"><label for="inv2" class="inventory-label">Faros delantero</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv3" value="Direccionales"><label for="inv3" class="inventory-label">Direccionales</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv4" value="Tapon de gasolina"><label for="inv4" class="inventory-label">Tapon de gasolina</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv5" value="Asientos"><label for="inv5" class="inventory-label">Asientos</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv6" value="Luz de stop"><label for="inv6" class="inventory-label">Luz de stop</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv7" value="Cubiertas completas"><label for="inv7" class="inventory-label">Cubiertas completas</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv8" value="Tacometro"><label for="inv8" class="inventory-label">Tacometro</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv9" value="Tapon de radiador"><label for="inv9" class="inventory-label">Tapon de radiador</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv10" value="Filtro de aire"><label for="inv10" class="inventory-label">Filtro de aire</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv11" value="Bateria"><label for="inv11" class="inventory-label">Bateria</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv12" value="Llave"><label for="inv12" class="inventory-label">Llave</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv13" value="Pedales"><label for="inv13" class="inventory-label">Pedales</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv14" value="Claxon"><label for="inv14" class="inventory-label">Claxon</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv15" value="Estereo"><label for="inv15" class="inventory-label">Estereo</label></div>
+            <div class="inventory-item"><input type="checkbox" id="inv16" value="Parabrisas"><label for="inv16" class="inventory-label">Parabrisas</label></div>
+          </div>
+        </div>
+
+        <div class="liquid-box" style="background: #000;">
+          <h3 style="margin:0;font-size:14px;color:#fff;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:5px;margin-bottom:10px">Testigos Encendidos</h3>
+          <div class="inventory-grid">
+            <div class="witness-item">
+              <input type="checkbox" id="warn_check" value="Check Engine">
+              <label for="warn_check" class="witness-label"><img src="check.png" style="width:28px;height:auto;margin-right:4px;vertical-align:middle;filter:invert(1) hue-rotate(180deg);mix-blend-mode:screen"> Check Engine</label>
+            </div>
+            <div class="witness-item">
+              <input type="checkbox" id="warn_abs" value="ABS">
+              <label for="warn_abs" class="witness-label"><img src="abs.png" style="width:28px;height:auto;margin-right:4px;vertical-align:middle;filter:invert(1) hue-rotate(180deg);mix-blend-mode:screen"> ABS</label>
+            </div>
+            <div class="witness-item">
+              <input type="checkbox" id="warn_oil" value="Aceite">
+              <label for="warn_oil" class="witness-label"><img src="oil.png" style="width:28px;height:auto;margin-right:4px;vertical-align:middle;filter:invert(1) hue-rotate(180deg);mix-blend-mode:screen"> Aceite</label>
+            </div>
+            <div class="witness-item">
+              <input type="checkbox" id="warn_batt" value="Bateria">
+              <label for="warn_batt" class="witness-label"><img src="bateria.png" style="width:28px;height:auto;margin-right:4px;vertical-align:middle;filter:invert(1) hue-rotate(180deg);mix-blend-mode:screen"> Batería</label>
+            </div>
+            <div class="witness-item">
+              <input type="checkbox" id="warn_brake" value="Freno de mano">
+              <label for="warn_brake" class="witness-label"><img src="Freno.png" style="width:28px;height:auto;margin-right:4px;vertical-align:middle;filter:invert(1) hue-rotate(180deg);mix-blend-mode:screen"> Freno</label>
+            </div>
+            <div class="witness-item">
+              <input type="checkbox" id="warn_tire" value="Neumatico">
+              <label for="warn_tire" class="witness-label"><img src="llanta.png" style="width:28px;height:auto;margin-right:4px;vertical-align:middle;filter:invert(1) hue-rotate(180deg);mix-blend-mode:screen"> Neumático</label>
+            </div>
+            <div class="witness-item">
+              <input type="checkbox" id="warn_temp" value="Temperatura">
+              <label for="warn_temp" class="witness-label"><img src="temp1.jpg" style="width:28px;height:auto;margin-right:4px;vertical-align:middle"> Temp.</label>
+            </div>
+            <div class="witness-item">
+              <input type="checkbox" id="warn_airbag" value="Airbag">
+              <label for="warn_airbag" class="witness-label"><img src="airbag.png" style="width:28px;height:auto;margin-right:4px;vertical-align:middle;filter:invert(1) hue-rotate(180deg);mix-blend-mode:screen"> Airbag</label>
+            </div>
+          </div>
+        </div>
+
+        <button class="action-btn" onclick="sendInspection()">Enviar a Tecnico</button>
+      </div>
+
+      <!-- Sección Historial -->
+      <div id="historial-section" class="section-content" style="display: none;">
+        <h2>Historial de Servicios</h2>
+        <div id="history-list" style="margin-top: 20px;"></div>
+      </div>
+    </main>
+    <footer class="footer">
+      &copy; 2026 Full Service Automotriz | <a href="#" class="footer-link">www.sistema-fullservice.com</a>
+    </footer>
+    </div>
+
+    <script>
+      function validateDepth(input) {
+        const val = parseFloat(input.value);
+        if (input.value === "") {
+          input.style.backgroundColor = "#ffffff";
+          input.style.borderColor = "#ccc";
+          return;
+        }
+        if (val >= 5) {
+          input.style.backgroundColor = "#c8e6c9"; // Verde claro ok
+          input.style.borderColor = "#388e3c";
+        } else if (val >= 3) {
+          input.style.backgroundColor = "#fff9c4"; // Amarillo alerta
+          input.style.borderColor = "#fbc02d";
+        } else {
+          input.style.backgroundColor = "#ffcdd2"; // Rojo peligro
+          input.style.borderColor = "#d32f2f";
+        }
+      }
+
+      function toggleDeleteBtn(input) {
+        const btn = input.nextElementSibling;
+        let img = input.parentNode.querySelector('.img-preview');
+        
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            if (!img) {
+              img = document.createElement('img');
+              img.className = 'img-preview';
+              input.parentNode.appendChild(img);
+            }
+            img.src = e.target.result;
+            img.style.display = 'block';
+          };
+          reader.readAsDataURL(input.files[0]);
+          btn.style.display = 'inline-block';
+        } else {
+          btn.style.display = 'none';
+          if (img) img.style.display = 'none';
+        }
+      }
+
+      function clearImage(btn) {
+        const input = btn.previousElementSibling;
+        input.value = '';
+        btn.style.display = 'none';
+        const img = input.parentNode.querySelector('.img-preview');
+        if (img) {
+          img.style.display = 'none';
+          img.src = '';
+        }
+      }
+
+      function updateClock() {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('es-ES', { dateStyle: 'full' });
+        const timeStr = now.toLocaleTimeString('es-ES', { timeStyle: 'medium' });
+        document.getElementById('datetime').innerHTML = 
+          `<span class="time-large">${timeStr}</span><span class="date-small">${dateStr}</span>`;
+      }
+      setInterval(updateClock, 1000);
+      updateClock(); // Llamada inicial para no esperar 1 segundo
+
+      // Verificar notificaciones periódicamente
+      setInterval(() => {
+        if (currentUser === 'IVAN' && localStorage.getItem('newOrderPending') === 'true') {
+           document.getElementById('tech-notification').style.display = 'block';
+        }
+        // Verificar notificaciones para el Asesor
+        if ((currentUser === 'DIEGO' || currentUser === 'ORSA') && localStorage.getItem('advisorNotificationPending') === 'true') {
+           loadAdvisorNotification();
+           localStorage.setItem('advisorNotificationPending', 'false'); // Marcar como visto/cargado
+        }
+        if ((currentUser === 'DIEGO' || currentUser === 'ORSA') && localStorage.getItem('diagnosticNotificationPending') === 'true') {
+           loadDiagnosticNotification();
+           localStorage.setItem('diagnosticNotificationPending', 'false'); // Marcar como visto/cargado
+        }
+      }, 2000);
+
+      function showSection(sectionId) {
+        const sections = ['home-section', 'servicio-section', 'diagnostico-section', 'inspeccion-section', 'historial-section'];
+        sections.forEach(id => {
+          document.getElementById(id).style.display = 'none';
+        });
+        document.getElementById(sectionId).style.display = 'block';
+        if (sectionId === 'historial-section') {
+          loadHistory();
+        }
+      }
+
+      let currentUser = '';
+
+      function goHome() {
+        if (currentUser === 'DIEGO' || currentUser === 'ORSA') {
+          showSection('inspeccion-section');
+        } else {
+          showSection('home-section');
+        }
+      }
+
+      function resetInspectionForm() {
+        // Limpiar inputs de texto en inspección
+        const inspectionSection = document.getElementById('inspeccion-section');
+        inspectionSection.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], input[type="email"], textarea, select').forEach(input => {
+          input.value = '';
+        });
+        
+        // Desmarcar checkboxes de inventario
+        document.querySelectorAll('.inventory-item input[type="checkbox"]').forEach(cb => {
+          cb.checked = false;
+        });
+        
+        // Desmarcar checkboxes de testigos
+        document.querySelectorAll('.witness-item input[type="checkbox"]').forEach(cb => {
+          cb.checked = false;
+        });
+      }
+
+      function login() {
+        const user = document.getElementById('username').value.toUpperCase();
+        const pass = document.getElementById('password').value;
+
+        // Restaurar estado de la navegación por defecto
+        const navServicio = document.getElementById('nav-servicio');
+        const navDiagnostico = document.getElementById('nav-diagnostico');
+        const navInspeccion = document.getElementById('nav-inspeccion');
+        const navHistorial = document.getElementById('nav-historial');
+
+        navServicio.style.display = 'inline-block';
+        navServicio.style.pointerEvents = 'auto';
+        navServicio.style.opacity = '1';
+        navDiagnostico.style.display = 'inline-block';
+        navDiagnostico.style.pointerEvents = 'auto';
+        navDiagnostico.style.opacity = '1';
+        navInspeccion.style.display = 'inline-block';
+        navInspeccion.style.pointerEvents = 'auto';
+        navInspeccion.style.opacity = '1';
+        navHistorial.style.display = 'inline-block';
+        navHistorial.style.pointerEvents = 'auto';
+        navHistorial.style.opacity = '1';
+
+        if(user === 'IVAN' && pass === '1234') {
+          document.getElementById('login-screen').style.display = 'none';
+          document.getElementById('main-content').style.display = 'flex';
+          document.getElementById('welcome-message').textContent = 'Bienvenido Tecnico';
+          currentUser = user;
+
+          // Bloquear botón de inspección para el Técnico
+          navInspeccion.style.pointerEvents = 'none';
+          navInspeccion.style.opacity = '0.5';
+          navHistorial.style.pointerEvents = 'none';
+          navHistorial.style.opacity = '0.5';
+
+          // Verificar si hay orden pendiente al iniciar sesión
+          if (localStorage.getItem('newOrderPending') === 'true') {
+            document.getElementById('tech-notification').style.display = 'block';
+          }
+
+          showSection('home-section');
+        } else if(user === 'DIEGO' && pass === '2002') {
+          document.getElementById('login-screen').style.display = 'none';
+          document.getElementById('main-content').style.display = 'flex';
+          document.getElementById('welcome-message').textContent = 'Bienvenido Asesor';
+          currentUser = user;
+
+          // Bloquear y ocultar botones para Diego
+          navServicio.style.pointerEvents = 'none';
+          navServicio.style.opacity = '0.5';
+          navDiagnostico.style.pointerEvents = 'none';
+          navDiagnostico.style.opacity = '0.5';
+          navInspeccion.style.display = 'none';
+
+          showSection('inspeccion-section');
+          resetInspectionForm();
+        } else if(user === 'ORSA' && pass === '2026') {
+          document.getElementById('login-screen').style.display = 'none';
+          document.getElementById('main-content').style.display = 'flex';
+          document.getElementById('welcome-message').textContent = 'Bienvenido Asesor';
+          currentUser = user;
+
+          // Bloquear y ocultar botones para ORSA
+          navServicio.style.pointerEvents = 'none';
+          navServicio.style.opacity = '0.5';
+          navDiagnostico.style.pointerEvents = 'none';
+          navDiagnostico.style.opacity = '0.5';
+          navInspeccion.style.display = 'none';
+
+          showSection('inspeccion-section');
+          resetInspectionForm();
+        } else {
+          document.getElementById('error-msg').style.display = 'block';
+        }
+      }
+
+      function logout() {
+        document.getElementById('main-content').style.display = 'none';
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        currentUser = '';
+      }
+
+      function toggleInventory() {
+        const btn = document.getElementById('btnToggleInventory');
+        const checkboxes = document.querySelectorAll('.inventory-item input');
+        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        
+        checkboxes.forEach(cb => cb.checked = !allChecked);
+        
+        btn.textContent = allChecked ? 'SELECCIONAR TODOS' : 'DESMARCAR TODOS';
+        btn.style.color = allChecked ? '#00e676' : '#ff1744';
+      }
+
+      function sendInspection() {
+        // Recopilar datos del formulario de inspección
+        const inputs = document.querySelectorAll('#inspeccion-section .form-group input');
+        const orderData = {};
+        inputs.forEach(input => {
+          const label = input.previousElementSibling.innerText;
+          orderData[label] = input.value;
+        });
+        
+        // Recopilar inventario
+        const inventory = [];
+        document.querySelectorAll('.inventory-item input:checked').forEach(cb => inventory.push(cb.value));
+        orderData['Inventario'] = inventory.join(', ') || 'Ninguno';
+
+        // Recopilar testigos
+        const witnesses = [];
+        document.querySelectorAll('.witness-item input:checked').forEach(cb => witnesses.push(cb.value));
+        orderData['Testigos'] = witnesses.join(', ') || 'Ninguno';
+        
+        // Guardar en localStorage para simular envío
+        localStorage.setItem('activeOrder', JSON.stringify(orderData));
+        localStorage.setItem('newOrderPending', 'true');
+        
+        alert("Orden enviada al técnico correctamente. El técnico recibirá una notificación.");
+      }
+
+      function loadOrderToService() {
+        const data = JSON.parse(localStorage.getItem('activeOrder'));
+        if (data) {
+          const infoDiv = document.getElementById('service-client-info');
+          
+          // Generar visualización de inventario con ✅ o ❌
+          const inventoryItems = [
+            "Espejos", "Faros delantero", "Direccionales", "Tapon de gasolina", 
+            "Asientos", "Luz de stop", "Cubiertas completas", "Tacometro", 
+            "Tapon de radiador", "Filtro de aire", "Bateria", "Llave", 
+            "Pedales", "Claxon", "Estereo", "Parabrisas"
+          ];
+          const selectedInv = (data['Inventario'] || '').split(', ');
+          
+          let invHTML = '<div style="grid-column:1/-1; margin-top:10px; border-top:1px solid rgba(255,255,255,0.2); padding-top:10px;"><strong>Inventario:</strong><div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:5px; margin-top:5px;">';
+          inventoryItems.forEach(item => {
+            const isChecked = selectedInv.includes(item);
+            const icon = isChecked ? '✅' : '❌';
+            const style = isChecked ? 'color:#fff; font-weight:bold;' : 'color:#888;';
+            invHTML += `<div style="font-size:0.85rem; ${style}"><span style="margin-right:5px">${icon}</span>${item}</div>`;
+          });
+          invHTML += '</div></div>';
+
+          infoDiv.innerHTML = `
+            <div style="background:rgba(255,255,255,0.1); padding:15px; border-radius:8px; margin-bottom:20px; border-left: 5px solid #00e676;">
+              <h3 style="margin-top:0; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:10px;">Orden Activa: ${data['Número de orden'] || 'N/A'}</h3>
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:0.9rem;">
+                <p style="margin:5px 0;"><strong>Cliente:</strong> ${data['Nombre del cliente'] || ''}</p>
+                <p style="margin:5px 0;"><strong>Vehículo:</strong> ${data['Marca del vehiculo'] || ''} ${data['Modelo'] || ''} ${data['Año'] || ''}</p>
+                <p style="margin:5px 0;"><strong>VIN:</strong> ${data['VIN'] || ''}</p>
+                <p style="margin:5px 0;"><strong>Fecha:</strong> ${data['Fecha de servicio'] || ''}</p>
+                ${invHTML}
+                <p style="margin:5px 0; grid-column: 1 / -1; color:#ff1744;"><strong>Testigos:</strong> ${data['Testigos'] || 'Ninguno'}</p>
+              </div>
+            </div>
+          `;
+          infoDiv.style.display = 'block';
+          
+          // Ocultar notificación y limpiar estado
+          document.getElementById('tech-notification').style.display = 'none';
+          localStorage.setItem('newOrderPending', 'false');
+          
+          showSection('servicio-section');
+        }
+      }
+
+      function loadAdvisorNotification() {
+        const history = JSON.parse(localStorage.getItem('serviceHistory')) || [];
+        if (history.length === 0) return;
+        
+        // Mostrar la última orden finalizada
+        const lastOrder = history[history.length - 1];
+        const container = document.getElementById('advisor-notification-content');
+        const panel = document.getElementById('advisor-notification');
+        
+        let contentHTML = `
+          <div style="margin-bottom:15px; border-bottom:1px dashed rgba(255,255,255,0.1); padding-bottom:10px;">
+            <div style="font-weight:bold; color:#ffea00; margin-bottom:5px;">${lastOrder.vehicle}</div>
+            <div style="font-size:0.9rem; color:#bdbdbd;">Cliente: ${lastOrder.client}</div>
+            <div style="font-size:0.8rem; color:#bdbdbd;">${lastOrder.date}</div>
+          </div>
+        `;
+
+        // Detalles de Servicio
+        if (lastOrder.service) {
+          contentHTML += `<h4 style="margin:10px 0 5px; color:#64b5f6;">Reporte de Servicio</h4>`;
+          
+          // Radios (Semáforos) - Lista expandible
+          if (lastOrder.service.radios && Object.keys(lastOrder.service.radios).length > 0) {
+             contentHTML += `<div style="font-size:0.8rem; margin-top:5px; font-style:italic;">Puntos revisados: ${Object.keys(lastOrder.service.radios).length}</div>`;
+             
+             contentHTML += `<button onclick="const d=document.getElementById('notif-details'); if(d.style.display==='none'){d.style.display='block';this.innerText='Ocultar detalles'}else{d.style.display='none';this.innerText='Ver detalles'}" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:0.8rem; margin:5px 0; width:100%;">Ver detalles</button>`;
+             
+             contentHTML += `<div id="notif-details" style="display:none; background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; margin-bottom:10px;">`;
+             for (const [name, val] of Object.entries(lastOrder.service.radios)) {
+                 let label = name;
+                 const input = document.querySelector(`input[name="${name}"]`);
+                 if(input) {
+                     const row = input.closest('.service-row');
+                     if(row) {
+                         const lbl = row.querySelector('.service-label');
+                         if(lbl) label = lbl.innerText;
+                     }
+                 }
+                 let status = '---';
+                 let color = '#bdbdbd';
+                 if(val === 'g') { status='OK'; color='#00e676'; }
+                 else if(val === 'y') { status='Atención'; color='#ffea00'; }
+                 else if(val === 'r') { status='Mal'; color='#ff1744'; }
+                 
+                 contentHTML += `<div style="display:flex; justify-content:space-between; font-size:0.85rem; border-bottom:1px solid rgba(255,255,255,0.05); padding:3px 0;"><span style="color:#e0e0e0;">${label}</span><span style="color:${color}; font-weight:bold;">${status}</span></div>`;
+             }
+             contentHTML += `</div>`;
+          }
+
+          // Inputs
+          if (lastOrder.service.inputs) {
+             lastOrder.service.inputs.forEach(val => {
+               if(val) contentHTML += `<div style="font-size:0.9rem; margin-bottom:2px;">• ${val}</div>`;
+             });
+          }
+        }
+
+        // Detalles de Diagnóstico
+        if (lastOrder.diagnosis && lastOrder.diagnosis.inputs) {
+          contentHTML += `<h4 style="margin:10px 0 5px; color:#ff8a65;">Diagnóstico</h4>`;
+          lastOrder.diagnosis.inputs.forEach(val => {
+             if(val) contentHTML += `<div style="font-size:0.9rem; margin-bottom:4px; background:rgba(255,255,255,0.05); padding:5px; border-radius:4px;">${val}</div>`;
+          });
+        }
+        
+        // Imágenes
+        let imagesHTML = '';
+        if (lastOrder.service && lastOrder.service.images) {
+           lastOrder.service.images.forEach(img => { if(img) imagesHTML += `<img src="${img}" style="width:60px; height:60px; object-fit:cover; border-radius:4px; border:1px solid #555;">`; });
+        }
+        if (lastOrder.diagnosis && lastOrder.diagnosis.images) {
+           lastOrder.diagnosis.images.forEach(img => { if(img) imagesHTML += `<img src="${img}" style="width:60px; height:60px; object-fit:cover; border-radius:4px; border:1px solid #555;">`; });
+        }
+        
+        if(imagesHTML) {
+           contentHTML += `<div style="margin-top:10px; display:flex; gap:5px; flex-wrap:wrap;">${imagesHTML}</div>`;
+        }
+
+        container.innerHTML = contentHTML;
+        panel.style.display = 'block';
+      }
+
+      function closeAdvisorNotification() {
+        document.getElementById('advisor-notification').style.display = 'none';
+      }
+
+      function loadDiagnosticNotification() {
+        const diagHistory = JSON.parse(localStorage.getItem('diagnosticHistory')) || [];
+        if (diagHistory.length === 0) return;
+        
+        // Mostrar el último diagnóstico finalizado
+        const lastDiag = diagHistory[diagHistory.length - 1];
+        const container = document.getElementById('advisor-notification-content');
+        const panel = document.getElementById('advisor-notification');
+        
+        let contentHTML = `
+          <div style="margin-bottom:15px; border-bottom:1px dashed rgba(255,255,255,0.1); padding-bottom:10px;">
+            <div style="font-weight:bold; color:#ff8a65; margin-bottom:5px;">Diagnóstico Completado</div>
+            <div style="font-size:0.8rem; color:#bdbdbd;">${lastDiag.date}</div>
+          </div>
+        `;
+
+        // Detalles de Diagnóstico
+        if (lastDiag.diagnosis && lastDiag.diagnosis.inputs) {
+          contentHTML += `<h4 style="margin:10px 0 5px; color:#ff8a65;">Detalles del Diagnóstico</h4>`;
+          const labels = [
+            'Códigos de Falla (DTC)',
+            'Descripción del Problema (Cliente)',
+            'Diagnóstico Técnico y Recomendaciones',
+            'Pruebas Eléctricas (Batería/Alternador)',
+            'Análisis de Sensores y Datos en Vivo',
+            'Inspección de Fugas y Fluidos',
+            'Prueba de Ruta / Comportamiento'
+          ];
+          lastDiag.diagnosis.inputs.forEach((val, index) => {
+             if(val) {
+               const label = labels[index] || `Campo ${index + 1}`;
+               contentHTML += `<div style="font-size:0.9rem; margin-bottom:4px; background:rgba(255,255,255,0.05); padding:5px; border-radius:4px;"><strong>${label}:</strong> ${val}</div>`;
+             }
+          });
+        }
+        
+        // Imágenes
+        let imagesHTML = '';
+        if (lastDiag.diagnosis && lastDiag.diagnosis.images) {
+           lastDiag.diagnosis.images.forEach(img => { if(img) imagesHTML += `<img src="${img}" style="width:80px; height:80px; object-fit:cover; border-radius:4px; border:1px solid #555;">`; });
+        }
+        
+        if(imagesHTML) {
+           contentHTML += `<div style="margin-top:10px; display:flex; gap:5px; flex-wrap:wrap;">${imagesHTML}</div>`;
+        }
+
+        container.innerHTML = contentHTML;
+        panel.style.display = 'block';
+      }
+
+      function saveNotificationAsImage() {
+        const element = document.getElementById('advisor-notification');
+        
+        // Guardar estilos originales
+        const originalMaxHeight = element.style.maxHeight;
+        const originalOverflow = element.style.overflow;
+        
+        // Expandir para capturar todo el contenido
+        element.style.maxHeight = 'none';
+        element.style.overflow = 'visible';
+        
+        html2canvas(element, {
+          backgroundColor: '#1a1a1a', // Fondo oscuro para que se vea bien
+          scale: 3 // Higher resolution for sharper image
+        }).then(canvas => {
+          // Restaurar estilos originales
+          element.style.maxHeight = originalMaxHeight;
+          element.style.overflow = originalOverflow;
+          
+          const link = document.createElement('a');
+          link.download = 'Notificacion_Ordenes_Terminadas.png';
+          link.href = canvas.toDataURL();
+          link.click();
+          
+          // Preguntar si desea abrir el correo electrónico
+          const openEmail = confirm('Imagen guardada. ¿Desea abrir el correo electrónico para enviar al cliente?');
+          if (openEmail) {
+            // Abrir correo electrónico
+            const history = JSON.parse(localStorage.getItem('serviceHistory')) || [];
+            let clientEmail = '';
+            let clientName = 'Cliente';
+            if (history.length > 0) {
+              const lastOrder = history[history.length - 1];
+              clientEmail = lastOrder.inspection && lastOrder.inspection['Correo electrónico'] || '';
+              clientName = lastOrder.client || 'Cliente';
+            }
+            const subject = encodeURIComponent('Orden de Servicio Terminada - ' + clientName);
+            const body = encodeURIComponent('Estimado cliente,\n\nSu orden de servicio ha sido completada. Adjuntamos la imagen del reporte.\n\nAtentamente,\nFull Service Automotriz');
+            window.location.href = 'mailto:' + encodeURIComponent(clientEmail) + '?subject=' + subject + '&body=' + body;
+          }
+        });
+      }
+
+      // Función auxiliar para convertir imágenes a Base64
+      const fileToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = error => reject(error);
+        });
+      };
+
+      async function generateNotificationImage(record) {
+        // Crear contenido similar al de la notificación con datos únicos de la orden
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.left = '-9999px';
+        container.style.top = '0';
+        container.style.width = '450px';
+        container.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))';
+        container.style.border = '1px solid rgba(255,255,255,0.1)';
+        container.style.backdropFilter = 'blur(12px)';
+        container.style.webkitBackdropFilter = 'blur(12px)';
+        container.style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.1)';
+        container.style.borderRadius = '12px';
+        container.style.padding = '15px';
+        container.style.color = '#fff';
+        container.style.fontFamily = 'sans-serif';
+
+        // Generar un identificador visual único basado en el ID de la orden
+        const uniqueId = record.id.toString();
+        const colorScheme = `hsl(${(record.id % 360)}, 70%, 50%)`;
+
+        let contentHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid ${colorScheme}; padding-bottom:10px; margin-bottom:10px;">
+            <h3 style="margin:0; color:#00e676;"><i class="fas fa-check-circle"></i> Orden Terminada</h3>
+            <div style="font-size:0.7rem; color:#bdbdbd; background:rgba(255,255,255,0.05); padding:3px 8px; border-radius:4px; font-weight:bold;">ID: ${uniqueId.substring(0, 8)}</div>
+          </div>
+          <div style="margin-bottom:15px; border-bottom:1px dashed rgba(255,255,255,0.1); padding-bottom:10px;">
+            <div style="font-weight:bold; color:#ffea00; margin-bottom:5px;">${record.vehicle}</div>
+            <div style="font-size:0.9rem; color:#bdbdbd;">Cliente: ${record.client}</div>
+            <div style="font-size:0.8rem; color:#bdbdbd;">${record.date}</div>
+          </div>
+        `;
+
+        // Detalles de Servicio
+        if (record.service) {
+          contentHTML += `<h4 style="margin:10px 0 5px; color:#64b5f6;">Reporte de Servicio</h4>`;
+          
+          if (record.service.radios && Object.keys(record.service.radios).length > 0) {
+            contentHTML += `<div style="font-size:0.8rem; margin-top:5px; font-style:italic;">Puntos revisados: ${Object.keys(record.service.radios).length}</div>`;
+            
+            // Agregar resumen de estados del servicio para hacer la imagen más única
+            const statuses = Object.values(record.service.radios);
+            const okCount = statuses.filter(s => s === 'g').length;
+            const warningCount = statuses.filter(s => s === 'y').length;
+            const badCount = statuses.filter(s => s === 'r').length;
+            
+            contentHTML += `<div style="font-size:0.8rem; margin-top:5px; color:#bdbdbd;">
+              <span style="color:#00e676;">✓ OK: ${okCount}</span> | 
+              <span style="color:#ffea00;">⚠ Atención: ${warningCount}</span> | 
+              <span style="color:#ff1744;">✗ Mal: ${badCount}</span>
+            </div>`;
+          }
+        }
+
+        // Detalles de Diagnóstico
+        if (record.diagnosis && record.diagnosis.inputs && record.diagnosis.inputs.length > 0) {
+          contentHTML += `<h4 style="margin:10px 0 5px; color:#ff8a65;">Diagnóstico</h4>`;
+          
+          // Contar campos no vacíos para hacer la imagen más única
+          const filledInputs = record.diagnosis.inputs.filter(i => i && i.trim().length > 0);
+          contentHTML += `<div style="font-size:0.8rem; margin-top:5px; font-style:italic;">Campos completados: ${filledInputs.length}/${record.diagnosis.inputs.length}</div>`;
+          
+          // Mostrar resumen de diagnóstico (primeros caracteres)
+          if (filledInputs.length > 0) {
+            const summaryText = filledInputs[0].substring(0, 50) + (filledInputs[0].length > 50 ? '...' : '');
+            contentHTML += `<div style="font-size:0.75rem; margin-top:5px; color:#bdbdbd; background:rgba(255,255,255,0.03); padding:5px; border-radius:3px;">"${summaryText}"</div>`;
+          }
+        }
+
+        // Agregar timestamp completo para garantizar unicidad
+        contentHTML += `<div style="margin-top:15px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.7rem; color:#999; text-align:center;">Timestamp: ${uniqueId}</div>`;
+
+        container.innerHTML = contentHTML;
+        document.body.appendChild(container);
+
+        return new Promise((resolve) => {
+          html2canvas(container, {
+            backgroundColor: '#1a1a1a',
+            scale: 2
+          }).then(canvas => {
+            document.body.removeChild(container);
+            resolve(canvas.toDataURL());
+          });
+        });
+      }
+
+      async function finalizeService() {
+        // 1. Recopilar datos de Inspección
+        const inspectionData = {};
+        const inspectionSection = document.getElementById('inspeccion-section');
+        inspectionSection.querySelectorAll('.form-group').forEach(group => {
+          const label = group.querySelector('label').innerText;
+          const input = group.querySelector('input, select, textarea');
+          if(label && input) {
+            inspectionData[label] = input.value;
+          }
+        });
+        
+        // Recopilar inventario
+        const inventory = [];
+        document.querySelectorAll('.inventory-item input:checked').forEach(cb => inventory.push(cb.value));
+        inspectionData['Inventario'] = inventory.join(', ') || 'Ninguno';
+
+        // 2. Recopilar datos de Servicio
+        const serviceData = {
+          radios: {},
+          inputs: [],
+          checkboxes: []
+        };
+        const serviceSection = document.getElementById('servicio-section');
+        
+        // Radios
+        serviceSection.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+          serviceData.radios[radio.name] = radio.value;
+        });
+
+        // Inputs de texto/número/textarea (excluyendo archivos)
+        const serviceInputs = serviceSection.querySelectorAll('input[type="text"], input[type="number"], textarea');
+        serviceInputs.forEach(input => {
+          serviceData.inputs.push(input.value);
+        });
+        
+        // Checkboxes
+        serviceSection.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+          serviceData.checkboxes.push(cb.checked);
+        });
+
+        // Recopilar imágenes de Servicio
+        serviceData.images = [];
+        const serviceFileInputs = serviceSection.querySelectorAll('input[type="file"]');
+        for (const input of serviceFileInputs) {
+          if (input.files && input.files[0]) {
+            const base64 = await fileToBase64(input.files[0]);
+            serviceData.images.push(base64);
+          } else {
+            // Si no hay archivo nuevo, verificar si hay una imagen previa cargada
+            const img = input.parentNode.querySelector('.img-preview');
+            serviceData.images.push((img && img.src && img.style.display !== 'none') ? img.src : null);
+          }
+        }
+
+        // 3. Recopilar datos de Diagnóstico
+        const diagnosisData = { inputs: [] };
+        const diagSection = document.getElementById('diagnostico-section');
+        diagSection.querySelectorAll('textarea, input[type="text"]').forEach(input => {
+          diagnosisData.inputs.push(input.value);
+        });
+        
+        // Recopilar imágenes de Diagnóstico
+        diagnosisData.images = [];
+        const diagFileInputs = diagSection.querySelectorAll('input[type="file"]');
+        for (const input of diagFileInputs) {
+          if (input.files && input.files[0]) {
+            const base64 = await fileToBase64(input.files[0]);
+            diagnosisData.images.push(base64);
+          } else {
+            const img = input.parentNode.querySelector('.img-preview');
+            diagnosisData.images.push((img && img.src && img.style.display !== 'none') ? img.src : null);
+          }
+        }
+
+        // Datos básicos para la lista
+        const clientName = inspectionData['Nombre del cliente'] || 'Cliente Sin Nombre';
+        const vehicle = (inspectionData['Marca del vehiculo'] || '') + ' ' + (inspectionData['Modelo'] || '');
+        const date = new Date().toLocaleString();
+
+        const record = {
+          id: Date.now(),
+          date: date,
+          client: clientName,
+          vehicle: vehicle,
+          inspection: inspectionData,
+          service: serviceData,
+          diagnosis: diagnosisData
+        };
+
+        // Guardar en localStorage
+        let history = JSON.parse(localStorage.getItem('serviceHistory')) || [];
+        history.push(record);
+        
+        // Generar imagen de la notificación y guardarla en el registro
+        const notificationImage = await generateNotificationImage(record);
+        record.notificationImage = notificationImage;
+        
+        try {
+          localStorage.setItem('serviceHistory', JSON.stringify(history));
+          localStorage.setItem('advisorNotificationPending', 'true'); // Notificar al asesor
+          alert('Servicio finalizado y guardado en el historial.');
+          showSection('historial-section');
+        } catch (e) {
+          alert('Error: No se pudo guardar. Es posible que las imágenes sean demasiado grandes para el almacenamiento local.');
+          console.error(e);
+        }
+      }
+
+      async function finalizeDiagnostic() {
+        // 1. Recopilar datos de Inspección para obtener información del cliente y vehículo
+        const inspectionData = {};
+        const inspectionSection = document.getElementById('inspeccion-section');
+        inspectionSection.querySelectorAll('.form-group').forEach(group => {
+          const label = group.querySelector('label').innerText;
+          const input = group.querySelector('input, select, textarea');
+          if(label && input) {
+            inspectionData[label] = input.value;
+          }
+        });
+
+        // 2. Recopilar datos de Diagnóstico
+        const diagnosisData = { inputs: [] };
+        const diagSection = document.getElementById('diagnostico-section');
+        diagSection.querySelectorAll('textarea, input[type="text"]').forEach(input => {
+          diagnosisData.inputs.push(input.value);
+        });
+        
+        // Recopilar imágenes de Diagnóstico
+        diagnosisData.images = [];
+        const diagFileInputs = diagSection.querySelectorAll('input[type="file"]');
+        for (const input of diagFileInputs) {
+          if (input.files && input.files[0]) {
+            const base64 = await fileToBase64(input.files[0]);
+            diagnosisData.images.push(base64);
+          } else {
+            const img = input.parentNode.querySelector('.img-preview');
+            diagnosisData.images.push((img && img.src && img.style.display !== 'none') ? img.src : null);
+          }
+        }
+
+        // Datos básicos para la lista
+        const clientName = inspectionData['Nombre del cliente'] || 'Cliente Sin Nombre';
+        const vehicle = (inspectionData['Marca del vehiculo'] || '') + ' ' + (inspectionData['Modelo'] || '');
+        const date = new Date().toLocaleString();
+
+        const record = {
+          id: Date.now(),
+          date: date,
+          client: clientName,
+          vehicle: vehicle,
+          inspection: inspectionData,
+          diagnosis: diagnosisData,
+          orderType: 'diagnosis'  // Marcar como orden de diagnóstico
+        };
+
+        // 3. Guardar en localStorage para diagnósticos histórico
+        let diagHistory = JSON.parse(localStorage.getItem('diagnosticHistory')) || [];
+        diagHistory.push(record);
+        
+        // 4. También guardar en el historial de órdenes del asesor (serviceHistory)
+        let serviceHistory = JSON.parse(localStorage.getItem('serviceHistory')) || [];
+        serviceHistory.push(record);
+        
+        try {
+          localStorage.setItem('diagnosticHistory', JSON.stringify(diagHistory));
+          localStorage.setItem('serviceHistory', JSON.stringify(serviceHistory));
+          localStorage.setItem('diagnosticNotificationPending', 'true'); // Notificar al asesor
+          alert('Diagnóstico finalizado y guardado en el historial de órdenes.');
+          showSection('historial-section');
+        } catch (e) {
+          alert('Error: No se pudo guardar. Es posible que las imágenes sean demasiado grandes.');
+          console.error(e);
+        }
+      }
+
+      function loadService(id) {
+        const history = JSON.parse(localStorage.getItem('serviceHistory')) || [];
+        const record = history.find(item => item.id === id);
+        
+        if (!record) {
+          alert('Error: No se encontró el registro.');
+          return;
+        }
+
+        if (!confirm('¿Cargar este registro? Esto sobrescribirá los datos actuales del formulario.')) return;
+
+        // Si es un diagnóstico, solo cargar diagnóstico y navegar a esa sección
+        if (record.orderType === 'diagnosis') {
+          const diagSection = document.getElementById('diagnostico-section');
+          
+          // Cargar datos de Diagnóstico
+          if (record.diagnosis && record.diagnosis.inputs) {
+            const diagInputs = diagSection.querySelectorAll('textarea, input[type="text"]');
+            diagInputs.forEach((input, index) => {
+              if (record.diagnosis.inputs[index] !== undefined) {
+                input.value = record.diagnosis.inputs[index];
+              }
+            });
+          }
+          
+          // Cargar imágenes de Diagnóstico
+          if (record.diagnosis && record.diagnosis.images) {
+            const fileInputs = diagSection.querySelectorAll('input[type="file"]');
+            fileInputs.forEach((input, index) => {
+              const base64 = record.diagnosis.images[index];
+              const existingImg = input.parentNode.querySelector('.img-preview');
+              if (existingImg) existingImg.style.display = 'none';
+              const btn = input.nextElementSibling;
+              if (btn) btn.style.display = 'none';
+
+              if (base64) {
+                let img = existingImg;
+                if (!img) {
+                  img = document.createElement('img');
+                  img.className = 'img-preview';
+                  input.parentNode.appendChild(img);
+                }
+                img.src = base64;
+                img.style.display = 'block';
+                if (btn) btn.style.display = 'inline-block';
+              }
+            });
+          }
+
+          alert('Diagnóstico cargado correctamente.');
+          showSection('diagnostico-section');
+          return;
+        }
+
+        // Flujo normal para servicios (no diagnósticos)
+        // 1. Cargar datos de Inspección
+        const inspectionSection = document.getElementById('inspeccion-section');
+        inspectionSection.querySelectorAll('.form-group').forEach(group => {
+          const label = group.querySelector('label').innerText;
+          const input = group.querySelector('input, select, textarea');
+          if(label && input && record.inspection && record.inspection[label] !== undefined) {
+            input.value = record.inspection[label];
+          }
+        });
+        
+        // Cargar inventario
+        if (record.inspection && record.inspection['Inventario']) {
+          const invItems = record.inspection['Inventario'].split(', ');
+          document.querySelectorAll('.inventory-item input').forEach(cb => {
+            cb.checked = invItems.includes(cb.value);
+          });
+        }
+
+        // 2. Cargar datos de Servicio
+        const serviceSection = document.getElementById('servicio-section');
+        
+        // Limpiar radios primero
+        serviceSection.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+
+        // Radios
+        if (record.service && record.service.radios) {
+          for (const [name, value] of Object.entries(record.service.radios)) {
+            const radio = serviceSection.querySelector(`input[name="${name}"][value="${value}"]`);
+            if (radio) radio.checked = true;
+          }
+        }
+
+        // Inputs
+        if (record.service && record.service.inputs) {
+          const serviceInputs = serviceSection.querySelectorAll('input[type="text"], input[type="number"], textarea');
+          serviceInputs.forEach((input, index) => {
+            if (record.service.inputs[index] !== undefined) {
+              input.value = record.service.inputs[index];
+              // Validar profundidad si aplica
+              if (input.getAttribute('oninput') && input.getAttribute('oninput').includes('validateDepth')) {
+                validateDepth(input);
+              }
+            }
+          });
+        }
+        
+        // Checkboxes
+        if (record.service && record.service.checkboxes) {
+          const checkboxes = serviceSection.querySelectorAll('input[type="checkbox"]');
+          checkboxes.forEach((cb, index) => {
+             if (record.service.checkboxes[index] !== undefined) {
+               cb.checked = record.service.checkboxes[index];
+             }
+          });
+        }
+
+        // Cargar imágenes de Servicio
+        if (record.service && record.service.images) {
+          const fileInputs = serviceSection.querySelectorAll('input[type="file"]');
+          fileInputs.forEach((input, index) => {
+            const base64 = record.service.images[index];
+            // Limpiar estado actual
+            const existingImg = input.parentNode.querySelector('.img-preview');
+            if (existingImg) existingImg.style.display = 'none';
+            const btn = input.nextElementSibling;
+            if (btn) btn.style.display = 'none';
+
+            if (base64) {
+              let img = existingImg;
+              if (!img) {
+                img = document.createElement('img');
+                img.className = 'img-preview';
+                input.parentNode.appendChild(img);
+              }
+              img.src = base64;
+              img.style.display = 'block';
+              if (btn) btn.style.display = 'inline-block';
+            }
+          });
+        }
+
+        // 3. Cargar datos de Diagnóstico
+        const diagSection = document.getElementById('diagnostico-section');
+        if (record.diagnosis && record.diagnosis.inputs) {
+          const diagInputs = diagSection.querySelectorAll('textarea, input[type="text"]');
+          diagInputs.forEach((input, index) => {
+            if (record.diagnosis.inputs[index] !== undefined) {
+              input.value = record.diagnosis.inputs[index];
+            }
+          });
+        }
+        
+        // Cargar imágenes de Diagnóstico
+        if (record.diagnosis && record.diagnosis.images) {
+          const fileInputs = diagSection.querySelectorAll('input[type="file"]');
+          fileInputs.forEach((input, index) => {
+            const base64 = record.diagnosis.images[index];
+            const existingImg = input.parentNode.querySelector('.img-preview');
+            if (existingImg) existingImg.style.display = 'none';
+            const btn = input.nextElementSibling;
+            if (btn) btn.style.display = 'none';
+
+            if (base64) {
+              let img = existingImg;
+              if (!img) {
+                img = document.createElement('img');
+                img.className = 'img-preview';
+                input.parentNode.appendChild(img);
+              }
+              img.src = base64;
+              img.style.display = 'block';
+              if (btn) btn.style.display = 'inline-block';
+            }
+          });
+        }
+
+        // Mostrar imagen de notificación si existe
+        if (record.notificationImage) {
+          const imgContainer = document.createElement('div');
+          imgContainer.id = 'notification-image-container';
+          imgContainer.style.marginTop = '20px';
+          imgContainer.style.textAlign = 'center';
+          imgContainer.style.overflowY = 'auto';
+          imgContainer.style.overflowX = 'hidden';
+          imgContainer.style.maxHeight = '80vh';
+          imgContainer.innerHTML = `
+            <h3>Imagen Generada al Finalizar la Orden</h3>
+            <img src="${record.notificationImage}" style="display: block; margin: 0 auto; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px;" />
+          `;
+          
+          // Agregar al final de la sección de inspección
+          const existingContainer = inspectionSection.querySelector('#notification-image-container');
+          if (existingContainer) existingContainer.remove();
+          inspectionSection.appendChild(imgContainer);
+        }
+
+        alert('Datos cargados correctamente.');
+        showSection('inspeccion-section');
+      }
+
+      function loadHistory() {
+        const history = JSON.parse(localStorage.getItem('serviceHistory')) || [];
+        const container = document.getElementById('history-list');
+        container.innerHTML = '';
+
+        if (history.length === 0) {
+          container.innerHTML = '<p style="text-align:center;">No hay servicios registrados.</p>';
+          return;
+        }
+
+        // Crear tabla
+        const table = document.createElement('table');
+        table.className = 'history-table';
+        table.innerHTML = `
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Cliente</th>
+              <th>Vehículo</th>
+              <th>Tipo</th>
+              <th style="text-align: center;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        `;
+        const tbody = table.querySelector('tbody');
+
+        // Mostrar historial (más reciente primero)
+        history.reverse().forEach(item => {
+          const tr = document.createElement('tr');
+          const orderType = item.orderType === 'diagnosis' ? 'Diagnóstico' : 'Servicio';
+          const typeColor = item.orderType === 'diagnosis' ? '#ff8a65' : '#64b5f6';
+          tr.innerHTML = `
+            <td>${item.date}</td>
+            <td>${item.client}</td>
+            <td>${item.vehicle}</td>
+            <td><span style="color: ${typeColor}; font-weight: bold;">${orderType}</span></td>
+            <td style="text-align: center;">
+              <button class="action-btn" style="display:inline-block; margin:0 5px; padding: 6px 10px; font-size: 0.8rem;" onclick="loadService(${item.id})">Cargar</button>
+              <button class="delete-img-btn" style="display:inline-block; background-color:#d32f2f;" onclick="deleteService(${item.id})">Eliminar</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+        
+        container.appendChild(table);
+      }
+
+      function deleteService(id) {
+        if(!confirm('¿Eliminar este registro del historial?')) return;
+        let history = JSON.parse(localStorage.getItem('serviceHistory')) || [];
+        history = history.filter(item => item.id !== id);
+        localStorage.setItem('serviceHistory', JSON.stringify(history));
+        loadHistory();
+      }
+    </script>
+    <script>
+      function generatePDF() {
+        // Crear un contenedor temporal para el reporte
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.left = '-9999px';
+        container.style.top = '0';
+        container.style.width = '100%';
+        container.style.maxWidth = '800px';
+        container.style.background = 'radial-gradient(circle at center, #4a4a4a 0%, #1a1a1a 100%)'; // Fondo oscuro similar a la página
+        container.style.color = '#ffffff'; // Texto blanco
+        container.style.padding = '20px';
+
+        // Encabezado del PDF con Logo y Título
+        const header = document.createElement('div');
+        header.style.display = 'flex';
+        header.style.justifyContent = 'space-between';
+        header.style.alignItems = 'center';
+        header.style.marginBottom = '20px';
+        header.style.borderBottom = '2px solid rgba(255,255,255,0.5)';
+        header.style.paddingBottom = '15px';
+
+        const branding = document.createElement('div');
+        branding.style.display = 'flex';
+        branding.style.alignItems = 'center';
+        branding.style.gap = '15px';
+
+        // Usar el SVG del logo de la barra superior
+        const logoSvg = document.querySelector('.logo svg');
+        if (logoSvg) {
+          const logoClone = logoSvg.cloneNode(true);
+          logoClone.setAttribute('width', '50');
+          logoClone.setAttribute('height', '50');
+          logoClone.querySelector('path').setAttribute('fill', '#ffffff');
+          branding.appendChild(logoClone);
+        }
+
+        const title = document.createElement('h1');
+        title.innerText = 'FULL SERVICE SYSTEM';
+        title.style.margin = '0';
+        title.style.fontSize = '24px';
+        branding.appendChild(title);
+        
+        // Agregar dominio al encabezado del PDF
+        const domain = document.createElement('div');
+        domain.innerText = 'www.sistema-fullservice.com';
+        domain.style.fontSize = '12px';
+        domain.style.color = '#ff5252';
+        domain.style.fontWeight = 'bold';
+        domain.style.marginTop = '5px';
+        branding.appendChild(domain);
+
+        header.appendChild(branding);
+        container.appendChild(header);
+
+        // Función para clonar y preparar una sección
+        function prepareSection(id) {
+          const original = document.getElementById(id);
+          const clone = original.cloneNode(true);
+          
+          clone.style.display = 'block';
+          
+          // Copiar valores de inputs (texto, fecha, etc.)
+          const origInputs = original.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]), textarea, select');
+          const cloneInputs = clone.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]), textarea, select');
+          origInputs.forEach((input, i) => {
+            cloneInputs[i].value = input.value;
+            cloneInputs[i].setAttribute('value', input.value);
+            // Mantener inputs legibles (fondo blanco, texto oscuro)
+            cloneInputs[i].style.border = '1px solid #ccc';
+            cloneInputs[i].style.color = '#333';
+            cloneInputs[i].style.backgroundColor = input.style.backgroundColor || '#fff';
+          });
+
+          // Copiar estado de los semáforos (radios)
+          const origRadios = original.querySelectorAll('input[type="radio"]');
+          const cloneRadios = clone.querySelectorAll('input[type="radio"]');
+          origRadios.forEach((radio, i) => {
+            if (radio.checked) {
+              cloneRadios[i].checked = true;
+              cloneRadios[i].setAttribute('checked', 'checked');
+            }
+          });
+
+          // Copiar estado de checkboxes (para la nueva casilla de balatas)
+          const origCheckboxes = original.querySelectorAll('input[type="checkbox"]');
+          const cloneCheckboxes = clone.querySelectorAll('input[type="checkbox"]');
+          origCheckboxes.forEach((chk, i) => {
+            if (chk.checked) {
+              cloneCheckboxes[i].checked = true;
+              cloneCheckboxes[i].setAttribute('checked', 'checked');
+            }
+          });
+
+          // Ajustar imágenes de previsualización para el PDF
+          clone.querySelectorAll('.img-preview').forEach(img => {
+            img.style.maxWidth = '150px';
+            img.style.maxHeight = '150px';
+            img.style.marginTop = '10px';
+          });
+
+          // Eliminar botones y inputs de archivo que no salen en el PDF
+          clone.querySelectorAll('button, .action-btn, .delete-img-btn, input[type="file"]').forEach(el => el.remove());
+
+          return clone;
+        }
+
+        // Clonar secciones en el orden solicitado: Inspección -> Servicio
+        const inspectionClone = prepareSection('inspeccion-section');
+        const serviceClone = prepareSection('servicio-section');
+        const diagnosisClone = prepareSection('diagnostico-section');
+
+        container.appendChild(inspectionClone);
+        
+        // Agregar un separador
+        const hr = document.createElement('hr');
+        hr.style.margin = '20px 0';
+        hr.style.border = '1px solid #ccc';
+        container.appendChild(hr);
+        
+        container.appendChild(serviceClone);
+
+        const hr2 = document.createElement('hr');
+        hr2.style.margin = '20px 0';
+        hr2.style.border = '1px solid #ccc';
+        container.appendChild(hr2);
+
+        container.appendChild(diagnosisClone);
+
+        // Agregar al body para que html2pdf pueda renderizarlo
+        document.body.appendChild(container);
+
+        const opt = {
+          margin:       0.5,
+          filename:     'Reporte_Servicio_Completo.pdf',
+          image:        { type: 'jpeg', quality: 0.98 },
+          html2canvas:  { scale: 2, useCORS: true },
+          jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(container).save().then(() => {
+          // Limpiar el contenedor temporal después de descargar
+          document.body.removeChild(container);
+        });
+      }
+    </script>
+  </body>
+</html>
